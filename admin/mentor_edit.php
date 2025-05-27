@@ -2,14 +2,13 @@
 session_start();
 include('../koneksi/koneksi.php');
 if (isset($_GET['data'])) {
-
   $id_mentor = $_GET['data'];
   $_SESSION['id_mentor'] = $id_mentor;
-  $sql_d = "select `nama_mentor` from `mentor` where
-  `id_mentor` = '$id_mentor'";
+  $sql_d = "SELECT `nama_mentor`, `id_bidang_ajar` FROM `mentor` WHERE `id_mentor` = '$id_mentor'";
   $query_d = mysqli_query($koneksi, $sql_d);
   while ($data_d = mysqli_fetch_row($query_d)) {
     $nama_mentor = $data_d[0];
+    $id_bidang_ajar = $data_d[1];
   }
 }
 ?>
@@ -82,11 +81,11 @@ if (isset($_GET['data'])) {
                   <select class="form-control" name="id_bidang_ajar" required>
                     <option value="">-- Pilih Bidang Ajar --</option>
                     <?php
-                    $sql_b = "SELECT id_bidang_ajar, nama_bidang FROM bidang_ajar ORDER BY nama_bidang";
+                    $sql_b = "SELECT id_bidang_ajar, bidang_ajar FROM bidang_ajar ORDER BY bidang_ajar";
                     $query_b = mysqli_query($koneksi, $sql_b);
                     while ($data_b = mysqli_fetch_array($query_b)) {
                       $selected = ($data_b['id_bidang_ajar'] == $id_bidang_ajar) ? 'selected' : '';
-                      echo "<option value='" . $data_b['id_bidang_ajar'] . "' $selected>" . $data_b['nama_bidang'] . "</option>";
+                      echo "<option value='" . $data_b['id_bidang_ajar'] . "' $selected>" . $data_b['bidang_ajar'] . "</option>";
                     }
                     ?>
                   </select>
