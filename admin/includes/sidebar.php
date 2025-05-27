@@ -51,15 +51,15 @@ if (session_status() == PHP_SESSION_NONE) {
               </a>
             </li>
             <li class="nav-item">
-              <a href="tugas.php" class="nav-link">
+              <a href="materi.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Tugas</p>
+                <p>Materi</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pesan.php" class="nav-link">
+              <a href="tugas.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Pesan</p>
+                <p>Tugas</p>
               </a>
             </li>
           </ul>
@@ -101,7 +101,7 @@ if (session_status() == PHP_SESSION_NONE) {
           </a>
         </li>
         <li class="nav-item">
-          <a href="kontak.php" class="nav-link">
+          <a href="pesan.php" class="nav-link">
             <i class="nav-icon fa fa-envelope"></i>
             <p>
               Pesan Masuk

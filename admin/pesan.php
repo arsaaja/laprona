@@ -2,7 +2,7 @@
 include('../koneksi/koneksi.php');
 if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
   if ($_GET['aksi'] == 'hapus') {
-    $id_kontak = $_GET['data'];
+    $id_pesan = $_GET['data'];
     //hapus 
     $sql_dh = "delete from `pesan_masuk`
             where `id_pesan` = '$id_pesan'";
@@ -99,12 +99,12 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
                   $halaman = $_GET['halaman'];
                   $posisi = ($halaman - 1) * $batas;
                 }
-                $sql_k = "SELECT id_pesan, username, email,isi_masukkan
+                $sql_k = "SELECT id_pesan, username, email,isi_masukan
                     FROM pesan_masuk ";
                 if (isset($_GET["katakunci"])) {
-                  $katakunci_kontak = $_GET["katakunci"];
+                  $katakunci_pesan = $_GET["katakunci"];
                   $sql_k .= " where `username` LIKE '%$katakunci_pesan%'  
-                  or `email` LIKE '%$katakunci_pesan%'  or `pesan` LIKE '%$katakunci_pesan%'";
+                  or `email` LIKE '%$katakunci_pesan%'  or `isi_masukan` LIKE '%$katakunci_pesan%'";
                 }
 
                 $sql_k .= " ORDER BY `id_pesan` limit $posisi, $batas ";
@@ -114,7 +114,7 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
                   $id_pesan = $data_u[0];
                   $nama = $data_u[1];
                   $email = $data_u[2];
-                  $isi_masukkan = $data_u[3];
+                  $pesan = $data_u[3];
                   ?>
                   <tr>
                     <td><?php echo $no; ?></td>
@@ -140,8 +140,8 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
           <?php
           //hitung jumlah semua data
           
-          $sql_jum = "SELECT id_pesan, username, email, pesan
-                    FROM pesan ORDER BY `id_pesan`";
+          $sql_jum = "SELECT id_pesan, username, email, isi_masukan
+                    FROM pesan_masuk ORDER BY `id_pesan`";
           $query_jum = mysqli_query($koneksi, $sql_jum);
           $jum_data = mysqli_num_rows($query_jum);
           $jum_halaman = ceil($jum_data / $batas);
@@ -159,7 +159,7 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
                 $sebelum = $halaman - 1;
                 $setelah = $halaman + 1;
                 if (isset($_GET["katakunci"])) {
-                  $katakunci_kontak = $_GET["katakunci"];
+                  $katakunci_pesan = $_GET["katakunci"];
                   if ($halaman != 1) {
                     echo "<li class='page-item'><a class='page-link'href='pesan.php?katakunci=$katakunci_pesan&halaman=1'>First</a></li>";
                     echo "<li class='page-item'><a class='page-link'href='pesan.php?katakunci=$katakunci_pesan&halaman=$sebelum'>«</a></li>";

@@ -35,7 +35,7 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
             </div>
 
           </div>
-          <a href="mentor_tambah.php" class="btn btn-primary mb-3">+ Tambah Siswa</a>
+          <a href="siswa_tambah.php" class="btn btn-primary mb-3">+ Tambah Siswa</a>
 
         </div><!-- /.container-fluid -->
       </section>
@@ -104,12 +104,10 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
                 $sql_u .= "ORDER BY nama_siswa limit $posisi, $batas ";
                 $query_u = mysqli_query($koneksi, $sql_u);
                 $no = 1;
-                while ($data_u = mysqli_fetch_row($query_u)) {
-                  $id_siswa = $data_u[0];
-                  $nama_siswa = $data_u[1];
-                  $id_kelas = $data_u[2];
-                  $nama_kelas = $data_u[3];
-
+                while ($data_u = mysqli_fetch_assoc($query_u)) {
+                  $id_siswa = $data_u['id_siswa'];
+                  $nama_siswa = $data_u['nama_siswa'];
+                  $nama_kelas = $data_u['nama_kelas'];
                   ?>
                   <tr>
                     <td><?php echo $no; ?></td>
