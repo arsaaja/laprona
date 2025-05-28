@@ -1,12 +1,13 @@
 <?php
 include('../koneksi/koneksi.php');
-if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
-    if ($_GET['aksi'] == 'hapus') {
-        $id_tugas = $_GET['data'];
-        $sql_dh = "delete from `tugas`
-            where `id_tugas` = '$id_tugas'";
-        mysqli_query($koneksi, $sql_dh);
-    }
+
+// Proses hapus
+if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
+    $id_tugas = mysqli_real_escape_string($koneksi, $_GET['data']);
+    $sql_dh = "DELETE FROM `tugas` WHERE `id_tugas` = '$id_tugas'";
+    mysqli_query($koneksi, $sql_dh);
+    header("Location: tugas.php?notif=hapusberhasil");
+    exit();
 }
 ?>
 
@@ -20,12 +21,9 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <?php include("includes/header.php") ?>
-
         <?php include("includes/sidebar.php") ?>
 
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
@@ -33,48 +31,41 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
                             <h3><i class="fas fa-jenjang"></i> Tugas</h3>
                         </div>
                     </div>
-                    <a href="tambahtugas.php" class="btn btn-primary mb-3">+ Tambah Tugas</a>
-
-                </div><!-- /.container-fluid -->
+                    <a href="tugas_tambah.php" class="btn btn-primary mb-3">+ Tambah Tugas</a>
+                </div>
             </section>
 
-            <!-- Main content -->
             <section class="content">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title" style="margin-top:5px;"><i class="fas fa-list-ul"></i> Daftar Tugas</h3>
                     </div>
-                    <!-- /.card-header -->
                     <div class="card-body">
                         <div class="col-md-12">
-
                             <form method="get" action="tugas.php">
                                 <div class="row">
                                     <div class="col-md-4 bottom-10">
-                                        <input type="text" class="form-control" placeholder="Cari id_tugas..."
-                                            id="kata_kunci" name="katakunci">
+                                        <input type="text" class="form-control" placeholder="Cari judul tugas..."
+                                            name="katakunci">
                                     </div>
                                     <div class="col-md-5 bottom-10">
-                                        <button type="submit" class="btn btn-primary"><i
-                                                class="fas fa-search"></i>&nbsp; Search</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i>
+                                            Search</button>
                                     </div>
-                                </div><!-- .row -->
+                                </div>
                             </form>
                         </div><br>
 
                         <div class="col-sm-12">
-                            <?php if (!empty($_GET['notif'])) { ?>
-                                <?php if ($_GET['notif'] == "tambahberhasil") { ?>
-                                    <div class="alert alert-success" role="alert">
-                                        Data Berhasil Ditambahkan</div>
-                                <?php } else if ($_GET['notif'] == "editberhasil") { ?>
-                                        <div class="alert alert-success" role="alert">
-                                            Data Berhasil Diubah</div>
-                                <?php } else if ($_GET['notif'] == "hapusberhasil") { ?>
-                                            <div class="alert alert-success" role="alert">
-                                                Data Berhasil Dihapus</div>
-                                <?php } ?>
-                            <?php } ?>
+                            <?php if (!empty($_GET['notif'])) {
+                                if ($_GET['notif'] == "tambahberhasil") { ?>
+                                    <div class="alert alert-success">Data Berhasil Ditambahkan</div>
+                                <?php } elseif ($_GET['notif'] == "editberhasil") { ?>
+                                    <div class="alert alert-success">Data Berhasil Diubah</div>
+                                <?php } elseif ($_GET['notif'] == "hapusberhasil") { ?>
+                                    <div class="alert alert-success">Data Berhasil Dihapus</div>
+                                <?php }
+                            } ?>
                         </div>
 
                         <table class="table table-bordered">
@@ -91,120 +82,115 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
                             </thead>
                             <tbody>
                                 <?php
-                                $batas = 2;
-                                if (!isset($_GET['halaman'])) {
-                                    $posisi = 0;
-                                    $halaman = 1;
-                                } else {
-                                    $halaman = $_GET['halaman'];
+                                $batas = 5;
+                                $posisi = 0;
+                                $halaman = 1;
+                                if (isset($_GET['halaman'])) {
+                                    $halaman = intval($_GET['halaman']);
                                     $posisi = ($halaman - 1) * $batas;
                                 }
-                                $sql_u = "SELECT `id_tugas`,`judul_tugas` FROM `tugas` ";
-                                if (isset($_GET["katakunci"])) {
-                                    $katakunci_jenjang = $_GET["katakunci"];
-                                    $sql_u .= " where `judul_tugas` LIKE '%$katakunci_tugas%'";
-                                }
-                                $sql_u .= "ORDER BY `judul_tugas` limit $posisi, $batas ";
-                                $query_u = mysqli_query($koneksi, $sql_u);
-                                $no = 1;
-                                while ($data_u = mysqli_fetch_row($query_u)) {
-                                    $id_tugas = $data_u[0];
-                                    $judul_tugas = $data_u[1];
 
+                                $sql = "SELECT `id_tugas`, `judul_tugas`, `skor_tugas`, `deadline_tugas` FROM `tugas`";
+                                $where = "";
+
+                                if (isset($_GET["katakunci"])) {
+                                    $katakunci = mysqli_real_escape_string($koneksi, $_GET["katakunci"]);
+                                    $where = " WHERE `judul_tugas` LIKE '%$katakunci%' or ";
+                                }
+
+                                $sql .= $where . " ORDER BY `judul_tugas` LIMIT $posisi, $batas";
+                                $query = mysqli_query($koneksi, $sql);
+                                $no = 1;
+
+                                while ($data = mysqli_fetch_assoc($query)) {
+                                    $id_tugas = $data['id_tugas'];
+                                    $judul_tugas = $data['judul_tugas'];
+                                    $skor_tugas = $data['skor_tugas'];
+                                    $deadline_tugas = $data['deadline_tugas'];
                                     ?>
                                     <tr>
-                                        <td><?php echo $no; ?></td>
+                                        <td><?php echo $no++; ?></td>
                                         <td><?php echo $judul_tugas; ?></td>
-
-                                        <td><?php echo $pengumpulan; ?></td>
+                                        <td><?php echo $skor_tugas; ?></td>
+                                        <td><?php echo $deadline_tugas; ?></td>
                                         <td align="center">
-                                            <a href="tugas_edit.php?data=<?php echo
-                                                $id_tugas ?>" class="btn btn-sm btn-warning"><i
-                                                    class="fas fa-edit"></i> Edit</a>
-                                            <a href="javascript:if(confirm('Anda yakin ingin menghapus data
-                    <?php echo $nama_mentor; ?>?'))window.location.href =
-                    'tugas.php?aksi=hapus&data=<?php echo
-                        $id_mentor; ?>&notif=hapusberhasil'" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>
-                                                Hapus</a>
+                                            <a href="tugas_edit.php?data=<?php echo $id_tugas; ?>"
+                                                class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="javascript:if(confirm('Yakin ingin menghapus tugas <?php echo $judul_tugas; ?>?'))window.location.href='tugas.php?aksi=hapus&data=<?php echo $id_tugas; ?>'"
+                                                class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </a>
                                         </td>
                                     </tr>
                                     <?php $no++;
                                 } ?>
                             </tbody>
                         </table>
-                    </div>
 
+                        <?php
+                        // Pagination
+                        $sql_count = "SELECT COUNT(*) AS total FROM `tugas`" . $where;
+                        $result_count = mysqli_query($koneksi, $sql_count);
+                        $row_count = mysqli_fetch_assoc($result_count);
+                        $jum_data = $row_count['total'];
+                        $jum_halaman = ceil($jum_data / $batas);
+                        ?>
 
-                    <?php
-                    //hitung jumlah semua data
-                    
-                    $sql_jum = "SELECT `id_mentor`,`nama_mentor` FROM `mentor` ORDER BY `nama_mentor`";
-                    $query_jum = mysqli_query($koneksi, $sql_jum);
-                    $jum_data = mysqli_num_rows($query_jum);
-                    $jum_halaman = ceil($jum_data / $batas);
-                    ?>
-
-
-                    <!-- /.card-body -->
-                    <div class="card-footer clearfix">
-                        <ul class="pagination justify-content-center mt-3">
-                            <?php
-                            if ($jum_halaman == 0) {
-                                //tidak ada halaman
-                            } else if ($jum_halaman == 1) {
-                                echo "<li class='page-item'><a class='page-link'>1</a></li>";
-                            } else {
-                                $sebelum = $halaman - 1;
-                                $setelah = $halaman + 1;
-                                if (isset($_GET["katakunci"])) {
-                                    $katakunci_mentor = $_GET["katakunci"];
-                                    if ($halaman != 1) {
-                                        echo "<li class='page-item'><a class='page-link'href='mentor.php?katakunci=$katakunci_mentor&halaman=1'>First</a></li>";
-                                        echo "<li class='page-item'><a class='page-link'href='mentor.php?katakunci=$katakunci_mentor&halaman=$sebelum'>«</a></li>";
-                                    }
-                                    for ($i = 1; $i <= $jum_halaman; $i++) {
-                                        if ($i > $halaman - 5 and $i < $halaman + 5) {
-                                            if ($i != $halaman) {
-                                                echo "<li class='page-item'><a class='page-link'href='mentor.php?katakunci=$katakunci_mentor&halaman=$i'>$i</a></li>";
-                                            } else {
-                                                echo "<li class='page-item'><a class='page-link'>$i</a></li>";
-                                            }
-                                        }
-                                    }
+                        <div class="card-footer clearfix">
+                            <ul class="pagination justify-content-center mt-3">
+                                <?php
+                                if ($jum_halaman == 0) {
+                                    //tidak ada halaman
+                                } else if ($jum_halaman == 1) {
+                                    echo "<li class='page-item'><a class='page-link'>1</a></li>";
                                 } else {
-                                    if ($halaman != 1) {
-                                        echo "<li class='page-item'><a class='page-link'href='mentor.php?halaman=1'>First</a></li>";
-                                        echo "<li class='page-item'><a class='page-link'href='mentor.php?halaman=$sebelum'>«</a></li>";
-                                    }
-                                    for ($i = 1; $i <= $jum_halaman; $i++) {
-                                        if ($i > $halaman - 5 and $i < $halaman + 5) {
-                                            if ($i != $halaman) {
-                                                echo "<li class='page-item'><a class='page-link'href='mentor.php?halaman=$i'>$i</a></li>";
-                                            } else {
-                                                echo "<li class='page-item'><a class='page-link'>$i</a></li>";
+                                    $sebelum = $halaman - 1;
+                                    $setelah = $halaman + 1;
+                                    if (isset($_GET["katakunci"])) {
+                                        $katakunci_tugas= $_GET["katakunci"];
+                                        if ($halaman != 1) {
+                                            echo "<li class='page-item'><a class='page-link'href='tugas.php?katakunci=$katakunci_tugas&halaman=1'>First</a></li>";
+                                            echo "<li class='page-item'><a class='page-link'href='tugas.php?katakunci=$katakunci_tugas&halaman=$sebelum'>«</a></li>";
+                                        }
+                                        for ($i = 1; $i <= $jum_halaman; $i++) {
+                                            if ($i > $halaman - 5 and $i < $halaman + 5) {
+                                                if ($i != $halaman) {
+                                                    echo "<li class='page-item'><a class='page-link'href='tugas.php?katakunci=$katakunci_tugas&halaman=$i'>$i</a></li>";
+                                                } else {
+                                                    echo "<li class='page-item'><a class='page-link'>$i</a></li>";
+                                                }
                                             }
                                         }
+                                    } else {
+                                        if ($halaman != 1) {
+                                            echo "<li class='page-item'><a class='page-link'href='tugas.php?halaman=1'>First</a></li>";
+                                            echo "<li class='page-item'><a class='page-link'href='tugas.php?halaman=$sebelum'>«</a></li>";
+                                        }
+                                        for ($i = 1; $i <= $jum_halaman; $i++) {
+                                            if ($i > $halaman - 5 and $i < $halaman + 5) {
+                                                if ($i != $halaman) {
+                                                    echo "<li class='page-item'><a class='page-link'href='tugas.php?halaman=$i'>$i</a></li>";
+                                                } else {
+                                                    echo "<li class='page-item'><a class='page-link'>$i</a></li>";
+                                                }
+                                            }
+                                        }
+                                        if ($halaman != $jum_halaman) {
+                                            echo "<li class='page-item'><a class='page-link' href='tugas.php?halaman=$setelah'> »</a></li>";
+                                            echo "<li class='page-item'><a class='page-link'href='tugas.php?halaman=$jum_halaman'>Last</a></li>";
+                                        }
                                     }
-                                    if ($halaman != $jum_halaman) {
-                                        echo "<li class='page-item'><a class='page-link' href='mentor.php?halaman=$setelah'> »</a></li>";
-                                        echo "<li class='page-item'><a class='page-link'href='mentor.php?halaman=$jum_halaman'>Last</a></li>";
-                                    }
-                                }
-                            } ?>
-                        </ul>
+                                } ?>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <!-- /.card -->
-
             </section>
-            <!-- /.content -->
         </div>
-        <!-- /.content-wrapper -->
         <?php include("includes/footer.php") ?>
-
     </div>
-    <!-- ./wrapper -->
-
     <?php include("includes/script.php") ?>
 </body>
 
