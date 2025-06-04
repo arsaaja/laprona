@@ -53,7 +53,7 @@ function isActiveForm($formName, $activeForm)
                 <input type="password" name="password" placeholder="Password" required>
                 <select name="role" required>
                     <option value="">--Select Role--</option>
-                    <option value="user">User</option>
+                    <option value="siswa">Siswa</option>
                     <option value="admin">Admin</option>
                 </select>
                 <button type="submit" name="register">Register</button>

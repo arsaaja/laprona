@@ -1,109 +1,427 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:wght@400;500;700&display=swap');
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-decoration: none;
-    border: none;
-    outline: none;
-    scroll-behavior: smooth;
-    font-family: "Poppins", serif;
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #fff;
+  color: #333;
 }
 
-:root{
-    --bg-color: #000000;
-    --second-bg-color: #161616;
-    --text-color: #fff;
-    --main-color: #b74b4b;
+header {
+  background: #a0522d;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
 }
 
-html{
-    font-size: 62.5%;
-    overflow-x: hidden ;
+.profile-menu {
+  position: relative;
+  cursor: pointer;
 }
 
-body{
-    background: var(--bg-color);
-    font-family: "Poppins", serif;
+.profile-menu .avatar {
+  font-size: 1.8rem;
+  background: white;
+  color: black;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.profile-menu .dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background: white;
+  color: black;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 150px;
+  z-index: 100;
+}
 
-.header{
-    position:fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 3rem 9%;
-    background: rgba(0, 0, 0, 0.7);
-    filter:drop-shadow(10px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
+.profile-menu:hover .dropdown {
+  display: block;
+}
+
+.profile-menu .dropdown a {
+  display: block;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.profile-menu .dropdown a:hover {
+  background: #eee;
+}
+
+.profile-menu .dropdown.show {
+  display: block;
 }
 
 .logo {
-    font-size: 3rem;
-    color: var(--main-color);
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0,5% ease;
+  text-decoration: none;
+  color: #ffff;
 }
 
-.logo:hover{
-    transform: scale(1.1);
+header .logo {
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
-.navbar a {
-    font-size: 1.8rem;
-    color: var(--text-color);
-    margin-left: 4rem;
-    font-weight: 500;
-    transition: 0.3s ease;
-    border-bottom: 3px solid transparent;
+nav a {
+  margin: 0 1rem;
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
 }
 
-.navbar a:hover,
-.navbar a.active{
-    color: var(--main-color);
-    border-bottom: 3px solid var(--main-color);
-}
-#menu-icon{
-    font-size: 3.6rem;
-    color: var(--main-color);
-    display: none;
+h2 {
+  padding: 1rem 2rem 0.5rem;
 }
 
-@media(max-width:995px){
-    #menu-icon{
-        display: block;
-    }
-    .navbar{
-        position: absolute;
-        top: 100%;
-        right: 0;
-        width: 40%;
-        border-left: 3px solid var(--main-color);
-        border-bottom: 3px solid var(--main-color);
-        border-bottom-left-radius: 2rem;
-        padding: 1rem 3%;
-        background-color: var(--second-bg-color);
-        border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
-        display: none;
-    }
-    .navbar.active{
-        display: block;
-    }
-    .navbar a{
-        display: block;
-        font-size: 2rem;
-        margin: 3rem 0;
-    }
-    .navbar a:hover,
-    .navbar a.active{
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-bottom: 0.5rem solid var(--main-color);
-    }
+.materi {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.icon i {
+  color: #333; /* atau warna kontras lainnya */
+}
+
+.card {
+  background: #fbd4a6;
+  border-radius: 20px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card .icon {
+  font-size: 2rem;
+  background-color: #fff;
+  color: #e27d54;
+  border: 2px solid #e27d54;
+  border-radius: 12px;
+  padding: 1rem;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.card h3 {
+  margin: 0.5rem 0 0.2rem;
+}
+
+.card p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.card button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #e88b5d;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card button:hover {
+  background-color: #e88b5d;
+  color: #fff;
+}
+
+.carousel-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  padding: 1rem 2rem;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 1rem;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-track img {
+  min-width: 100%;
+  max-width: 100%;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  nav {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .profile {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.profile-card {
+  background: #eeeeee;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card .avatar {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.profile-card h3 {
+  margin: 0 0 1rem;
+}
+
+.edit-btn {
+  background: #fbc252;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search-bar {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar input {
+  width: 100%;
+  max-width: 3000px;
+  padding: 1rem;
+  border-radius: 15px;
+  border: none;
+  background: #d9d9d9;
+  font-size: 1rem;
+}
+
+.kelas-list {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.kelas-card {
+  background: #fbc252;
+  border-radius: 15px;
+  padding: 1.5rem;
+  font-weight: 500;
+}
+
+.materi-list {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.materi-card {
+  background: #fbc252;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.materi-icon {
+  background: white;
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.materi-info {
+  flex: 1;
+}
+
+.materi-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.materi-info p {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: #222;
+}
+
+.unduh-btn {
+  background: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  color: #d65c00;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.unduh-btn:hover {
+  background-color: #e88b5d;
+  color: #fff;
+}
+
+.content {
+  padding: 2rem;
+}
+
+.performa {
+  background-color: #fdd595;
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.performa .section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.performa .ranking-icon {
+  font-size: 3rem;
+  margin: 1rem 0;
+}
+
+.performa p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.latihan-card {
+  background-color: #f07f4c;
+  padding: 1rem;
+  border-radius: 20px;
+  color: black;
+  width: 180px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.latihan-card .icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.kelas-info {
+  padding: 2rem;
+  position: relative;
+}
+
+.kelas-info h1 {
+  margin: 0;
+}
+
+.kelas-info p {
+  margin-top: 0.5rem;
+  color: #555;
+}
+
+.skor-diberikan {
+  background: #ffe0a3;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  font-weight: bold;
+}
+
+.detail-tugas {
+  background: #f4a261;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  margin: 0 2rem 2rem;
+}
+
+.detail-tugas h2 {
+  color: white;
+  margin-top: 0;
+}
+
+.card {
+  background: #ffd79f;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.card p {
+  margin: 0.5rem 0;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  background: #e07b3c;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #cf6e2b;
 }

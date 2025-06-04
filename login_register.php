@@ -13,7 +13,7 @@ if (isset($_POST['register'])) {
         $_SESSION['register_error'] = 'Email is already registered!';
         $_SESSION['active_form'] = 'register';
     } else {
-        $koneksi->query("INSERT INTO user (nama, email, password, role) VALUES('$nama', '$email', '$password','$role')");
+        $koneksi->query("INSERT INTO user (nama, email, password, role) VALUES('$name', '$email', '$password','$role')");
     }
 
     header("Location: index.php");
@@ -34,7 +34,7 @@ if (isset($_POST['login'])) {
             if ($user['role'] == 'admin') {
                 header("Location: admin/index.php");
             } else {
-                header("Location: user/user_page.php");
+                header("Location: user/index.php");
             }
             exit();
         }
