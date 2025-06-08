@@ -2,14 +2,17 @@
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
+$query = mysqli_query($koneksi, "SELECT logo FROM konfigurasi_web LIMIT 1");
+$data = mysqli_fetch_assoc($query);
+$logo = $data['logo'];
 ?>
 
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-blue elevation-4">
   <!-- Brand Logo -->
   <a href="index.php" class="brand-link">
-    <img src="/laprona/images/logo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow">
-    <span class="brand-text font-weight-light">La Prona</span>
+    <img src="/laprona/images/<?php echo $logo; ?>" alt="AdminLTE Logo" class="brand-image opacity-75 shadow"> <span
+      class="brand-text font-weight-light">La Prona</span>
   </a>
 
   <!-- Sidebar -->

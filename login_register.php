@@ -33,7 +33,16 @@ if (isset($_POST['login'])) {
             $_SESSION['role'] = $user['role'];
             if ($user['role'] == 'admin') {
                 header("Location: admin/index.php");
-            } else {
+            } else if ($user['role'] == 'mentor') {
+                header("Location: admin/index.php");
+            } else if ($user["role"] == "siswa") {
+                $id_user = $user['id_user'];
+                $siswa = $koneksi->query("SELECT * FROM siswa WHERE id_user = $id_user");
+                if ($siswa->num_rows > 0) {
+                    $siswa_data = $siswa->fetch_assoc();
+                    $_SESSION['id_siswa'] = $siswa_data['id_siswa'];
+                    $_SESSION['id_kelas'] = $siswa_data['id_kelas'];
+                }
                 header("Location: user/index.php");
             }
             exit();

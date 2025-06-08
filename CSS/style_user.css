@@ -67,14 +67,97 @@ header {
   display: block;
 }
 
-.logo {
-  text-decoration: none;
-  color: #ffff;
+.profile-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fbc252;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.profile-avatar {
+  font-size: 50px;
+  background: #ddd;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profile-info {
+  font-size: 18px;
+  margin: 10px 0;
 }
 
-header .logo {
+.back-link {
+  display: inline-block;
+  margin-top: 15px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.avatar {
+  font-size: 48px;
+  width: 80px;
+  height: 80px;
+  background-color: #ddd;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px auto;
+  cursor: pointer;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-form input {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.edit-form .edit-btn {
+  background: #e27d54;
+  color: white;
   font-weight: bold;
-  font-size: 1.5rem;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.edit-form .edit-btn:hover {
+  background: #d16742;
+}
+
+.brand-image {
+  text-decoration: none;
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+  margin-right: 8px;
+}
+
+.brand-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 nav a {
@@ -89,28 +172,30 @@ h2 {
 }
 
 .materi {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px;
 }
 
 .icon i {
-  color: #333; /* atau warna kontras lainnya */
+  color: #333;
 }
 
 .card {
-  background: #fbd4a6;
-  border-radius: 20px;
-  padding: 1.5rem;
+  width: 200px;
+  background-color: #fbc252;
+  border-radius: 10px;
+  padding: 15px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
 }
 
 .card .icon {
   font-size: 2rem;
   background-color: #fff;
-  color: #e27d54;
   border: 2px solid #e27d54;
   border-radius: 12px;
   padding: 1rem;
@@ -186,33 +271,6 @@ h2 {
   margin-top: 2rem;
 }
 
-.profile-card {
-  background: #eeeeee;
-  padding: 2rem;
-  border-radius: 20px;
-  text-align: center;
-  width: 300px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.profile-card .avatar {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
-.profile-card h3 {
-  margin: 0 0 1rem;
-}
-
-.edit-btn {
-  background: #fbc252;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
 .search-bar {
   padding: 1.5rem 2rem;
   display: flex;
@@ -230,17 +288,44 @@ h2 {
 }
 
 .kelas-list {
-  padding: 1rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  background-color: #f9f9f9;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
 }
 
 .kelas-card {
-  background: #fbc252;
-  border-radius: 15px;
-  padding: 1.5rem;
-  font-weight: 500;
+  background: linear-gradient(135deg, #f2a974, #fbd4a6);
+  border: 2px solid #e09100;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #333;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.kelas-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+.kelas-card > div:first-child {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.kelas-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: auto;
 }
 
 .materi-list {
@@ -251,7 +336,8 @@ h2 {
 }
 
 .materi-card {
-  background: #fbc252;
+  width: 200px;
+  background-color: #fbc252;
   padding: 1rem 1.5rem;
   border-radius: 15px;
   display: flex;
@@ -334,7 +420,7 @@ h2 {
 }
 
 .latihan-card {
-  background-color: #f07f4c;
+  background-color: #fbc252;
   padding: 1rem;
   border-radius: 20px;
   color: black;
@@ -357,6 +443,31 @@ canvas {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ed8e69;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.button-link:hover {
+  background-color: #e27d54;
+  transform: translateY(-1px);
+}
+
+.button-link:active {
+  background-color: #cc6e48;
+  transform: translateY(1px);
 }
 
 .kelas-info {
@@ -412,16 +523,79 @@ canvas {
   gap: 1rem;
 }
 
-.btn {
-  background: #e07b3c;
+.latihan-card button {
+  background: #ffd79f;
   border: none;
   padding: 0.7rem 1.5rem;
   border-radius: 10px;
-  color: white;
+  color: black;
   font-weight: bold;
   cursor: pointer;
 }
 
-.btn:hover {
-  background: #cf6e2b;
+.latihan-card button:hover {
+  background-color: #f4a261;
+  color: #fff;
+}
+
+.actions button {
+  background: #ffd79f;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  background-color: #f4a261;
+  color: #fff;
+}
+
+form {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #333;
+}
+
+form input[type="text"],
+form input[type="email"],
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+form input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover {
+  background-color: #45a049;
 }

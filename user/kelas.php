@@ -18,23 +18,36 @@
     <h2>Daftar Kelas</h2>
 
     <div class="kelas-list">
-        <div class="kelas-card">
-            <div>Kelas 4B</div>
-            <div>Bu Wawan</div>
-            <div class="kelas-buttons">
-                <a href="materi.php" class="btn">Materi</a>
-                <a href="pengumpulan_tugas.php" class="btn">Tugas</a>
-            </div>
-        </div>
-        <div class="kelas-card">
-            <div>Kelas 4C</div>
-            <div>Bu Totok</div>
-        </div>
-        <div class="kelas-card">
-            <div>Kelas 4D</div>
-            <div>Pak Sugandi</div>
-        </div>
+        <?php
+        include('../koneksi/koneksi.php');
+        $query = "SELECT * FROM kelas";
+        $result = mysqli_query($koneksi, $query);
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                ?>
+                <div class="kelas-card">
+                    <div>
+                        <?= htmlspecialchars($row["nama_kelas"] ?? "Tanpa Nama Kelas") ?><br>
+                        <?= htmlspecialchars($row["subjek_kelas"] ?? "Tanpa Subjek") ?>
+                    </div>
+                    <div class="kelas-actions">
+                        <a href="materi.php?id_kelas=<?= $row["id_kelas"] ?>" class="button-link">
+                            <i class="fa-solid fa-chalkboard-user"></i> Materi
+                        </a>
+                        <a href="pengumpulan_tugas.php?id_kelas=<?= $row["id_kelas"] ?>" class="button-link">
+                            <i class="fas fa-book"></i> Tugas
+                        </a>
+                    </div>
+                </div>
+                <?php
+            }
+        } else {
+            echo "<p>Tidak ada data kelas tersedia.</p>";
+        }
+        ?>
     </div>
+
     <script src="script.js"></script>
 </body>
 

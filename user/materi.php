@@ -15,7 +15,7 @@
     <h2>Daftar Materi</h2>
 
     <div class="search-bar">
-        <input type="text" placeholder="🔍 Cari Materi" />
+        <input type="text" placeholder="Cari Materi" />
     </div>
 
     <div class="materi-list">

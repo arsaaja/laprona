@@ -40,8 +40,8 @@ function isActiveForm($formName, $activeForm)
                 <?= showError($errors['login']); ?>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <button type="submit" name="login">Login</button>
-                <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
+                <button type="submit" name="login">Masuk</button>
+                <p>Belum punya akun? <a href="#" onclick="showForm('register-form')">Daftar</a></p>
             </form>
         </div>
         <div class="form-box <?= isActiveForm('register', $activeForm); ?>" id="register-form">
@@ -52,12 +52,13 @@ function isActiveForm($formName, $activeForm)
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <select name="role" required>
-                    <option value="">--Select Role--</option>
+                    <option value="">--Pilih Role--</option>
                     <option value="siswa">Siswa</option>
                     <option value="admin">Admin</option>
+                    <option value="mentor">Mentor</option>
                 </select>
-                <button type="submit" name="register">Register</button>
-                <p>Already have an account? <a href="#" onclick="showForm('login-form')">Login</a></p>
+                <button type="submit" name="register">Daftar</button>
+                <p>Sudah punya akun? <a href="#" onclick="showForm('login-form')">Login</a></p>
             </form>
         </div>
     </div>
