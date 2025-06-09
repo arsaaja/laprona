@@ -11,7 +11,7 @@ $logo = $data['logo'];
     <a href="kelas.php">Kelas</a>
     <a href="tugas.php">Tugas</a>
     <a href="materi.php">Materi</a>
-    <a href="materi.php">Pesan</a>
+    <a href="index.php#form-masukan">Pesan</a>
 </nav>
 <div class="profile-menu">
     <div class="avatar" id="avatarBtn">

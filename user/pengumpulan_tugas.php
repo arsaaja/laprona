@@ -1,26 +1,49 @@
 <?php
 include('../koneksi/koneksi.php');
-$id = $_GET['id'];
+session_start();
+
+$id_tugas = (int) $_GET['id'];
+$id_siswa = $_SESSION['id_siswa'];
+
+
+// Ambil data tugas dan subjek
 $query = "
-    SELECT tugas.*, kelas.subjek_kelas 
-    FROM tugas 
-    JOIN kelas ON tugas.id_kelas = kelas.id_kelas 
-    WHERE tugas.id_tugas = $id
+    SELECT t.*, sk.subjek_kelas, k.nama_kelas 
+    FROM tugas t
+    JOIN master_kelas_subjek mks ON t.id_subjek = mks.id_subjek
+    JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
+    JOIN kelas k ON t.id_kelas = k.id_kelas
+    WHERE t.id_tugas = $id_tugas
+    LIMIT 1
 ";
 $result = mysqli_query($koneksi, $query);
 $data = mysqli_fetch_assoc($result);
 
-// Handle form submission
+// Cek apakah siswa sudah mengumpulkan
+$query_cek = mysqli_query($koneksi, "SELECT * FROM pengumpulan_tugas WHERE id_tugas = $id_tugas AND id_siswa = $id_siswa");
+$pengumpulan = mysqli_fetch_assoc($query_cek);
+
+// Handle form submit
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['tandai_selesai'])) {
-    $id_tugas = $_POST['id_tugas'];
     $link_drive = mysqli_real_escape_string($koneksi, $_POST['link_drive']);
 
-    $query_insert = "INSERT INTO pengumpulan (id_tugas, link_drive, status) 
-                     VALUES ($id_tugas, '$link_drive', 'selesai')";
-    if (mysqli_query($koneksi, $query_insert)) {
-        echo "<script>alert('Link tugas berhasil dikumpulkan!');</script>";
+    if ($pengumpulan) {
+        // Update jika sudah ada
+        $query_update = "UPDATE pengumpulan_tugas SET link_drive = '$link_drive', status = 'selesai', waktu_submit = NOW()
+                         WHERE id_tugas = $id_tugas AND id_siswa = $id_siswa";
+        $success = mysqli_query($koneksi, $query_update);
     } else {
-        echo "<script>alert('Gagal menyimpan ke database.');</script>";
+        // Insert baru
+        $query_insert = "INSERT INTO pengumpulan_tugas (id_tugas, id_siswa, link_drive, status)
+                         VALUES ($id_tugas, $id_siswa, '$link_drive', 'selesai')";
+        $success = mysqli_query($koneksi, $query_insert);
+    }
+
+    if ($success) {
+        echo "<script>alert('Tugas berhasil dikumpulkan!'); window.location.href='dashboard.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Gagal menyimpan tugas.');</script>";
     }
 }
 ?>
@@ -53,24 +76,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['tandai_selesai'])) {
                 <p><strong><i class="fas fa-file-alt"></i> <?= htmlspecialchars($data['tugas']) ?></strong></p>
                 <p><i class="fas fa-clock"></i> Deadline: <?= date("d/m/Y H:i", strtotime($data['deadline_tugas'])) ?>
                 </p>
-                <p><i class="fas fa-file"></i> Tipe Pengumpulan:
-                    <?= pathinfo($data['pengumpulan_tugas'], PATHINFO_EXTENSION) ?>
-                </p>
-                <p><i class="fas fa-star"></i> Skor: <?= htmlspecialchars($data['skor_tugas']) ?></p>
+
+                <?php if (!empty($pengumpulan)): ?>
+                    <p><i class="fas fa-link"></i> Link Pengumpulan:
+                        <a href="<?= htmlspecialchars($pengumpulan['link_drive']) ?>" target="_blank">
+                            <?= htmlspecialchars($pengumpulan['link_drive']) ?>
+                        </a>
+                    </p>
+                    <p><i class="fas fa-calendar-check"></i> Status:
+                        <strong><?= ucfirst($pengumpulan['status']) ?></strong>
+                        (<?= date('d/m/Y H:i', strtotime($pengumpulan['waktu_submit'])) ?>)
+                    </p>
+                <?php else: ?>
+                    <p><i class="fas fa-info-circle"></i> Belum ada pengumpulan dari Anda.</p>
+                <?php endif; ?>
+
+                <p><i class="fas fa-star"></i> Skor Maksimum: <?= htmlspecialchars($data['skor_tugas']) ?></p>
             </div>
 
-            <!-- Form pengumpulan tugas berupa link -->
+            <!-- Form pengumpulan tugas -->
             <form method="post">
                 <input type="hidden" name="id_tugas" value="<?= $data['id_tugas'] ?>">
                 <div class="form-group">
                     <label for="link_drive"><strong>Link Google Drive</strong></label><br>
-                    <input type="url" name="link_drive" id="link_drive" class="form-control" required
+                    <input type="url" name="link_drive" id="link_drive" class="form-control"
+                        value="<?= htmlspecialchars($pengumpulan['link_drive'] ?? '') ?>" required
                         placeholder="https://drive.google.com/...">
                 </div>
                 <br>
                 <div class="actions">
                     <button type="submit" name="tandai_selesai" class="btn">
-                        <i class="fas fa-check-circle"></i> Tandai Selesai
+                        <i class="fas fa-check-circle"></i>
+                        <?= $pengumpulan ? 'Perbarui Pengumpulan' : 'Tandai Selesai' ?>
                     </button>
                 </div>
             </form>

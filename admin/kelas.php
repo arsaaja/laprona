@@ -4,7 +4,7 @@ include('../koneksi/koneksi.php');
 if (isset($_GET['aksi']) && isset($_GET['data'])) {
     if ($_GET['aksi'] == 'hapus') {
         $id_kelas = $_GET['data'];
-        $sql_dh = "DELETE FROM `kelas` WHERE `id_kelas` = '$id_kelas'";
+        $sql_dh = "DELETE FROM master_kelas_subjek WHERE id_kelas = '$id_kelas'";
         mysqli_query($koneksi, $sql_dh);
         header("Location: kelas.php?notif=hapusberhasil");
         exit;
@@ -87,16 +87,18 @@ if (isset($_GET['aksi']) && isset($_GET['data'])) {
 
                                 $katakunci = isset($_GET['katakunci']) ? $_GET['katakunci'] : '';
 
-                                $sql = "SELECT k.*, jp.nama_jenjang, 
-                                       (SELECT COUNT(*) FROM siswa s WHERE s.id_kelas = k.id_kelas) AS jumlah_siswa 
-                                        FROM kelas k
-                                        LEFT JOIN jenjang_pendidikan jp ON k.id_jenjang = jp.id_jenjang_pendidikan";
+                                $sql = "SELECT k.*, jp.nama_jenjang,
+       (SELECT COUNT(*) FROM siswa s WHERE s.id_kelas = k.id_kelas) AS jumlah_siswa
+       FROM kelas k
+       LEFT JOIN jenjang_pendidikan jp ON k.id_jenjang = jp.id_jenjang_pendidikan";
 
                                 if (!empty($katakunci)) {
                                     $sql .= " WHERE k.nama_kelas LIKE '%$katakunci%' OR k.subjek_kelas LIKE '%$katakunci%'";
                                 }
 
-                                $sql .= " ORDER BY k.nama_kelas ASC LIMIT $posisi, $batas";
+                                $sql .= " WHERE k.nama_kelas LIKE '%$katakunci%' OR k.id_kelas IN (SELECT mks.id_kelas FROM master_kelas_subjek mks 
+    JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas 
+    WHERE sk.subjek_kelas LIKE '%$katakunci%')";
 
                                 $query = mysqli_query($koneksi, $sql);
                                 $no = $posisi + 1;
@@ -106,7 +108,17 @@ if (isset($_GET['aksi']) && isset($_GET['data'])) {
                                     <tr>
                                         <td><?php echo $no++; ?></td>
                                         <td><?php echo $data['nama_kelas']; ?></td>
-                                        <td><?php echo $data['subjek_kelas']; ?></td>
+                                        <td><?php $id_kelas = $data['id_kelas'];
+                                        $sql_subjek = "SELECT sk.subjek_kelas FROM master_kelas_subjek mks 
+               JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
+               WHERE mks.id_kelas = $id_kelas";
+                                        $res_subjek = mysqli_query($koneksi, $sql_subjek);
+                                        $nama_subjek_list = [];
+                                        while ($subjek = mysqli_fetch_assoc($res_subjek)) {
+                                            $nama_subjek_list[] = $subjek['subjek_kelas'];
+                                        }
+                                        echo implode(", ", $nama_subjek_list);
+                                        ?></td>
                                         <td><?php echo $data['nama_jenjang']; ?></td>
                                         <td><?php echo $data['jumlah_siswa']; ?></td>
                                         <td align="center">

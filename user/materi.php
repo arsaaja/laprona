@@ -1,3 +1,4 @@
+<?php include('../koneksi/koneksi.php'); ?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -19,32 +20,36 @@
     </div>
 
     <div class="materi-list">
-        <div class="materi-card">
-            <div class="materi-icon"><i class="fas fa-file-alt"></i></div>
-            <div class="materi-info">
-                <h4><strong>Hukum Newton Dalam Kehidupan Sehari-hari</strong></h4>
-                <p>Pembahasan hukum newton 1, 2, dan 3</p>
-            </div>
-            <button class="unduh-btn">Unduh</button>
-        </div>
+        <?php
+        $query = "SELECT 
+            materi.id_materi, 
+            materi.nama_materi, 
+            materi.isi_materi, 
+            (
+                SELECT subjek_kelas.subjek_kelas 
+                FROM master_kelas_subjek mks
+                JOIN subjek_kelas ON mks.id_kelas_subjek = subjek_kelas.id_subjek_kelas
+                WHERE mks.id_kelas = materi.id_kelas
+                LIMIT 1
+            ) AS subjek_kelas
+          FROM materi
+          JOIN kelas ON materi.id_kelas = kelas.id_kelas
+          ORDER BY materi.id_materi DESC
+          LIMIT 10";
+        $result = mysqli_query($koneksi, $query);
 
-        <div class="materi-card">
-            <div class="materi-icon"><i class="fas fa-file-alt"></i></div>
-            <div class="materi-info">
-                <h4><strong>Hukum Newton Dalam Kehidupan Sehari-hari</strong></h4>
-                <p>Pembahasan hukum newton 1, 2, dan 3</p>
-            </div>
-            <button class="unduh-btn">Unduh</button>
-        </div>
-
-        <div class="materi-card">
-            <div class="materi-icon"><i class="fas fa-file-alt"></i></div>
-            <div class="materi-info">
-                <h4><strong>Hukum Newton Dalam Kehidupan Sehari-hari</strong></h4>
-                <p>Pembahasan hukum newton 1, 2, dan 3</p>
-            </div>
-            <button class="unduh-btn">Unduh</button>
-        </div>
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo '<div class="materi-card">';
+            echo '  <div class="materi-icon"><i class="fas fa-file-alt"></i></div>';
+            echo '  <div class="materi-info">';
+            echo '    <h4><strong>' . htmlspecialchars($row['subjek_kelas']) . '</strong></h4>';
+            echo '    <p>' . htmlspecialchars($row['isi_materi']) . '</p>';
+            echo '    <p><em>' . htmlspecialchars($row['subjek_kelas']) . '</em></p>';
+            echo '  </div>';
+            echo '  <a href="unduh_materi.php?id=' . $row['id_materi'] . '" class="unduh-btn">Unduh</a>';
+            echo '</div>';
+        }
+        ?>
     </div>
 
 </body>

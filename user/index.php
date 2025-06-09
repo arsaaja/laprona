@@ -36,26 +36,46 @@ if (isset($_POST['kirim'])) {
 
     <h2>Berita</h2>
     <div class="carousel-container">
+        <button class="carousel-button prev" onclick="moveCarousel(-1)">‹</button>
         <div class="carousel-track" id="carouselTrack">
-            <img src="https://via.placeholder.com/250x120?text=SNPMB+UTBK" alt="SNPMB UTBK" />
-            <img src="https://via.placeholder.com/250x120?text=Kelas+UTBK+SNBT" alt="Kelas UTBK SNBT" />
-            <img src="https://via.placeholder.com/250x120?text=Daftar+Batch+6" alt="Daftar Batch 6" />
+            <img src="/laprona/images/banner.png" alt="SNPMB UTBK" />
+            <img src="/laprona/images/banner.png" alt="Kelas UTBK SNBT" />
+            <img src="/laprona/images/banner.png" alt="Daftar Batch 6" />
         </div>
+        <button class="carousel-button next" onclick="moveCarousel(1)">›</button>
     </div>
+
     <h2>Materi Minggu Ini</h2>
     <div class="materi">
         <?php
-        $query = "SELECT materi.*, kelas.subjek_kelas FROM materi
-    JOIN kelas ON materi.id_kelas = kelas.id_kelas
-    ORDER BY id_materi DESC LIMIT 8";
+        $query = "SELECT m.*, k.nama_kelas, k.id_kelas 
+          FROM materi m
+          JOIN kelas k ON m.id_kelas = k.id_kelas
+          ORDER BY m.id_materi DESC LIMIT 4";
 
         $result = mysqli_query($koneksi, $query);
 
         while ($row = mysqli_fetch_assoc($result)) {
+            $id_kelas = $row['id_kelas'];
+
+            // Ambil subjek-subjek untuk kelas ini
+            $subjek = [];
+            $sql_subjek = "SELECT sk.subjek_kelas 
+                   FROM master_kelas_subjek mks
+                   JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
+                   WHERE mks.id_kelas = $id_kelas";
+            $res_subjek = mysqli_query($koneksi, $sql_subjek);
+            while ($sub = mysqli_fetch_assoc($res_subjek)) {
+                $subjek[] = $sub['subjek_kelas'];
+            }
+
+            $subjek_kelas = implode(", ", $subjek);
+
+            // Tampilkan
             echo '<div class="card">';
             echo '  <div class="icon"><i class="fas ' . ($row["ikon"] ?? "fa-book") . '"></i></div>';
             echo '  <h3>' . $row['nama_materi'] . '</h3>';
-            echo '  <p>' . $row['subjek_kelas'] . '</p>';
+            echo '  <p>' . $subjek_kelas . '</p>';
             echo '  <a href="detail_materi.php?id=' . $row['id_materi'] . '" class="button-link">Detail</a>';
             echo '</div>';
         }
@@ -70,8 +90,16 @@ if (isset($_POST['kirim'])) {
     <h2>Tugas Minggu Ini</h2>
     <div class="materi">
         <?php
-        $query = "SELECT tugas.id_tugas, tugas.judul_tugas, tugas.deadline_tugas, kelas.subjek_kelas FROM tugas
-                        JOIN kelas ON tugas.id_kelas = kelas.id_kelas ORDER BY tugas.id_tugas DESC LIMIT 7";
+        include('../koneksi/koneksi.php');
+
+        // Ambil tugas + subjek melalui relasi master_kelas_subjek
+        $query = "SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, sk.subjek_kelas
+          FROM tugas t
+          JOIN master_kelas_subjek mks ON t.id_kelas = mks.id_kelas
+          JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
+          ORDER BY t.id_tugas DESC
+          LIMIT 7";
+
         $result = mysqli_query($koneksi, $query);
 
         while ($row = mysqli_fetch_assoc($result)) {
@@ -84,6 +112,7 @@ if (isset($_POST['kirim'])) {
             echo '</div>';
         }
         ?>
+
         <div class="card">
             <div class="icon"><i class="fas fa-folder-open"></i></div>
             <h3>Lihat Daftar Tugas</h3>
@@ -91,7 +120,7 @@ if (isset($_POST['kirim'])) {
         </div>
     </div>
 
-    <h2>Kirim Masukan</h2>
+    <h2 id="form-masukan">Kirim Masukan</h2>
     <?php if (!empty($notif)): ?>
         <div class="notif-box">
             <?= htmlspecialchars($notif) ?>

@@ -13,3 +13,11 @@ window.addEventListener("click", function () {
 dropdownMenu.addEventListener("click", function (e) {
   e.stopPropagation();
 });
+
+const track = document.getElementById("carouselTrack");
+const slideWidth = track.clientWidth;
+
+function moveCarousel(direction) {
+  const scrollAmount = track.clientWidth * direction;
+  track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+}
