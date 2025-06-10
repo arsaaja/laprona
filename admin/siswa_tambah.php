@@ -5,7 +5,10 @@ if (isset($_GET['data'])) {
 
     $id_siswa = $_GET['data'];
     $_SESSION['id_siswa'] = $id_siswa;
-    $sql_d = "SELECT `nama_siswa`, `id_kelas` FROM `siswa` WHERE `id_siswa` = '$id_siswa'";
+    $sql_d = "SELECT siswa.id_siswa, user.nama AS nama_siswa, kelas.nama_kelas 
+                    FROM siswa 
+                    LEFT JOIN user ON siswa.id_user = user.id_user 
+                    LEFT JOIN kelas ON siswa.id_kelas = kelas.id_kelas WHERE `id_siswa` = '$id_siswa'";
     $query_d = mysqli_query($koneksi, $sql_d);
     while ($data_d = mysqli_fetch_row($query_d)) {
         $nama_siswa = $data_d[0];

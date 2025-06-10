@@ -119,18 +119,8 @@ while ($row = mysqli_fetch_assoc($result)) {
             $id_kelas = $kelas_data['id_kelas'] ?? 0;
 
             // Ambil daftar tugas yang terkait dengan kelas dan subjek yang valid
-            $query = "
-    SELECT 
-        t.id_tugas, 
-        t.judul_tugas, 
-        t.deadline_tugas, 
-        sk.subjek_kelas, 
-        k.nama_kelas
-    FROM tugas t
-    JOIN kelas k ON t.id_kelas = k.id_kelas
-    JOIN subjek_kelas sk ON t.id_subjek = sk.id_subjek_kelas
-    WHERE t.id_kelas = $id_kelas
-";
+            $query = "SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, sk.subjek_kelas,  k.nama_kelas
+    FROM tugas t JOIN kelas k ON t.id_kelas = k.id_kelas JOIN subjek_kelas sk ON t.id_subjek = sk.id_subjek_kelas WHERE t.id_kelas = $id_kelas";
 
             $result = mysqli_query($koneksi, $query);
 

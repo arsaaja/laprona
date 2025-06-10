@@ -48,36 +48,24 @@ if (isset($_POST['kirim'])) {
     <h2>Materi Minggu Ini</h2>
     <div class="materi">
         <?php
-        $query = "SELECT m.*, k.nama_kelas, k.id_kelas 
-          FROM materi m
-          JOIN kelas k ON m.id_kelas = k.id_kelas
-          ORDER BY m.id_materi DESC LIMIT 4";
+        $queryMateri = "SELECT m.*, k.nama_kelas, sk.subjek_kelas
+    FROM materi m
+    JOIN kelas k ON m.id_kelas = k.id_kelas
+    JOIN subjek_kelas sk ON m.id_subjek = sk.id_subjek_kelas ORDER BY m.id_materi DESC LIMIT 4";
 
-        $result = mysqli_query($koneksi, $query);
+        $resultMateri = mysqli_query($koneksi, $queryMateri);
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            $id_kelas = $row['id_kelas'];
-
-            // Ambil subjek-subjek untuk kelas ini
-            $subjek = [];
-            $sql_subjek = "SELECT sk.subjek_kelas 
-                   FROM master_kelas_subjek mks
-                   JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
-                   WHERE mks.id_kelas = $id_kelas";
-            $res_subjek = mysqli_query($koneksi, $sql_subjek);
-            while ($sub = mysqli_fetch_assoc($res_subjek)) {
-                $subjek[] = $sub['subjek_kelas'];
+        if ($resultMateri) {
+            while ($row = mysqli_fetch_assoc($resultMateri)) {
+                echo '<div class="card">';
+                echo '  <div class="icon"><i class="fas ' . ($row["ikon"] ?? "fa-book") . '"></i></div>';
+                echo '  <h3>' . htmlspecialchars($row['nama_materi']) . '</h3>';
+                echo '  <p>' . htmlspecialchars($row['subjek_kelas']) . '</p>';
+                echo '  <a href="detail_materi.php?id=' . $row['id_materi'] . '" class="button-link">Detail</a>';
+                echo '</div>';
             }
-
-            $subjek_kelas = implode(", ", $subjek);
-
-            // Tampilkan
-            echo '<div class="card">';
-            echo '  <div class="icon"><i class="fas ' . ($row["ikon"] ?? "fa-book") . '"></i></div>';
-            echo '  <h3>' . $row['nama_materi'] . '</h3>';
-            echo '  <p>' . $subjek_kelas . '</p>';
-            echo '  <a href="detail_materi.php?id=' . $row['id_materi'] . '" class="button-link">Detail</a>';
-            echo '</div>';
+        } else {
+            echo "Gagal memuat materi: " . mysqli_error($koneksi);
         }
         ?>
         <div class="card">
@@ -90,26 +78,29 @@ if (isset($_POST['kirim'])) {
     <h2>Tugas Minggu Ini</h2>
     <div class="materi">
         <?php
-        include('../koneksi/koneksi.php');
 
-        // Ambil tugas + subjek melalui relasi master_kelas_subjek
-        $query = "SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, sk.subjek_kelas
-          FROM tugas t
-          JOIN master_kelas_subjek mks ON t.id_kelas = mks.id_kelas
-          JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
-          ORDER BY t.id_tugas DESC
-          LIMIT 7";
+        $queryTugas = "
+    SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, sk.subjek_kelas
+    FROM tugas t
+    JOIN master_kelas_subjek mks ON t.id_kelas = mks.id_kelas
+    JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
+    ORDER BY t.id_tugas DESC 
+    LIMIT 7
+";
+        $resultTugas = mysqli_query($koneksi, $queryTugas);
 
-        $result = mysqli_query($koneksi, $query);
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo '<div class="card">';
-            echo '  <div class="icon"><i class="fas fa-tasks"></i></div>';
-            echo '  <h3>' . $row['judul_tugas'] . '</h3>';
-            echo '  <p>' . $row['subjek_kelas'] . '</p>';
-            echo '  <p>Deadline: ' . $row['deadline_tugas'] . '</p>';
-            echo '  <a href="pengumpulan_tugas.php?id=' . $row['id_tugas'] . '" class="button-link">Detail</a>';
-            echo '</div>';
+        if ($resultTugas) {
+            while ($row = mysqli_fetch_assoc($resultTugas)) {
+                echo '<div class="card">';
+                echo '  <div class="icon"><i class="fas fa-tasks"></i></div>';
+                echo '  <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>';
+                echo '  <p>' . htmlspecialchars($row['subjek_kelas']) . '</p>';
+                echo '  <p>Deadline: ' . htmlspecialchars($row['deadline_tugas']) . '</p>';
+                echo '  <a href="pengumpulan_tugas.php?id=' . $row['id_tugas'] . '" class="button-link">Detail</a>';
+                echo '</div>';
+            }
+        } else {
+            echo "Gagal memuat tugas: " . mysqli_error($koneksi);
         }
         ?>
 
