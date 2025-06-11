@@ -2,8 +2,7 @@
 include('../koneksi/koneksi.php');
 session_start();
 
-// Error prevention: Check if id is present and is a number
-$id_tugas = isset($_GET['id']) && is_numeric($_GET['id']) ? (int) $_GET['id'] : 0; // Or some default value/error handling
+$id_tugas = isset($_GET['id']) && is_numeric($_GET['id']) ? (int) $_GET['id'] : 0; 
 $id_siswa = $_SESSION['id_siswa'];
 
 $query = "SELECT t.*, sk.subjek_kelas, k.nama_kelas
@@ -16,18 +15,15 @@ $query = "SELECT t.*, sk.subjek_kelas, k.nama_kelas
 
 $result = mysqli_query($koneksi, $query);
 
-// Error prevention: Check if the query was successful
 if (!$result) {
-    die("Query failed: " . mysqli_error($koneksi)); // Handle the error appropriately
+    die("Query failed: " . mysqli_error($koneksi)); 
 }
 
 $data = mysqli_fetch_assoc($result);
 
-// Error prevention: Check if data was fetched
 if (!$data) {
-    // Handle the case where no data is found for the given id_tugas
     echo "<p>Tugas tidak ditemukan.</p>";
-    exit; // Or redirect to an error page
+    exit; 
 }
 
 $query_cek = mysqli_query($koneksi, "SELECT * FROM pengumpulan_tugas WHERE id_tugas = $id_tugas AND id_siswa = $id_siswa");
