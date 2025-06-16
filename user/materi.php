@@ -83,7 +83,7 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
                 echo '        <p>' . htmlspecialchars($row['isi_materi']) . '</p>';
                 echo '        <p><em>' . htmlspecialchars($row['subjek_kelas']) . '</em></p>';
                 echo '    </div>';
-                echo '    <a href="unduh_materi.php?id=' . $row['id_materi'] . '" class="unduh-btn">Unduh</a>';
+                echo '    <a href="' . htmlspecialchars($row['isi_materi']) . '" target="_blank" class="unduh-btn">Unduh</a>';
                 echo '</div>';
             }
         } else {

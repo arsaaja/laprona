@@ -5,7 +5,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
     $id_penilaian = mysqli_real_escape_string($koneksi, $_GET['data']);
     $sql_dh = "DELETE FROM `penilaian` WHERE `id_penilaian` = '$id_penilaian'";
     mysqli_query($koneksi, $sql_dh);
-    header("Location: penilaian.php?notif=hapusberhasil"); 
+    header("Location: penilaian.php?notif=hapusberhasil");
     exit();
 }
 ?>
@@ -30,22 +30,23 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                             <h3><i class="fas fa-clipboard-check"></i> Penilaian Tugas</h3>
                         </div>
                     </div>
-               
+
                 </div>
             </section>
 
             <section class="content">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title" style="margin-top:5px;"><i class="fas fa-list-ul"></i> Daftar Penilaian Tugas</h3>
+                        <h3 class="card-title" style="margin-top:5px;"><i class="fas fa-list-ul"></i> Daftar Penilaian
+                            Tugas</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <form method="get" action="tugas.php"> 
+                            <form method="get" action="tugas.php">
                                 <div class="row">
                                     <div class="col-md-4 bottom-10">
-                                        <input type="text" class="form-control" placeholder="Cari judul tugas atau nama siswa..."
-                                            name="katakunci">
+                                        <input type="text" class="form-control"
+                                            placeholder="Cari judul tugas atau nama siswa..." name="katakunci">
                                     </div>
                                     <div class="col-md-5 bottom-10">
                                         <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i>
@@ -73,7 +74,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                     <th width="5%">No</th>
                                     <th width="20%">Judul Tugas</th>
                                     <th width="20%">Nama Siswa</th>
-                                    <th width="15%">Mata Pelajaran</th> 
+                                    <th width="15%">Mata Pelajaran</th>
                                     <th width="15%">Tanggal Pengumpulan</th>
                                     <th width="10%">Nilai</th>
                                     <th width="15%">
@@ -94,46 +95,49 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                 $sql = "SELECT
                                             p.id_penilaian,
                                             p.nilai,
-                                            s.nama_siswa,
+                                            u.nama AS nama_siswa,
                                             t.judul_tugas,
-                                            sk.nama_subjek,
-                                            pt.tanggal_pengumpulan
+                                            sk.subjek_kelas,
+                                            pt.waktu_submit
                                         FROM
                                             `penilaian` p
                                         JOIN
                                             `siswa` s ON p.id_siswa = s.id_siswa
                                         JOIN
+                                            `user` u ON s.id_user = u.id_user
+                                        JOIN
                                             `pengumpulan_tugas` pt ON p.id_pengumpulan = pt.id_pengumpulan
                                         JOIN
                                             `tugas` t ON pt.id_tugas = t.id_tugas
                                         JOIN
-                                            `subjek_kelas` sk ON p.id_subjek = sk.id_subjek"; 
+                                            `subjek_kelas` sk ON p.id_subjek = sk.id_subjek_kelas";
 
                                 $where = "";
                                 if (isset($_GET["katakunci"])) {
                                     $katakunci = mysqli_real_escape_string($koneksi, $_GET["katakunci"]);
-                                    $where = " WHERE t.judul_tugas LIKE '%$katakunci%' OR s.nama_siswa LIKE '%$katakunci%'";
+                                    $where = " WHERE t.judul_tugas LIKE '%$katakunci%' OR u.nama LIKE '%$katakunci%'";
                                 }
 
-                                $sql .= $where . " ORDER BY t.judul_tugas ASC, s.nama_siswa ASC LIMIT $posisi, $batas";
+                                $sql .= $where . " ORDER BY t.judul_tugas ASC, nama_siswa ASC LIMIT $posisi, $batas";
                                 $query = mysqli_query($koneksi, $sql);
-                                $no = $posisi + 1; 
+                                $no = $posisi + 1;
 
                                 while ($data = mysqli_fetch_assoc($query)) {
                                     $id_penilaian = $data['id_penilaian'];
                                     $judul_tugas = $data['judul_tugas'];
                                     $nama_siswa = $data['nama_siswa'];
-                                    $nama_subjek = $data['nama_subjek'];
-                                    $tanggal_pengumpulan = $data['tanggal_pengumpulan'];
+                                    $nama_subjek = $data['subjek_kelas'];
+                                    $tanggal_pengumpulan = $data['waktu_submit'];
                                     $nilai = $data['nilai'];
-                                ?>
+                                    ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
                                         <td><?php echo $judul_tugas; ?></td>
                                         <td><?php echo $nama_siswa; ?></td>
                                         <td><?php echo $nama_subjek; ?></td>
                                         <td><?php echo $tanggal_pengumpulan; ?></td>
-                                        <td><?php echo ($nilai !== null) ? $nilai : 'Belum Dinilai'; ?></td> 
+                                        <td><?php echo ($nilai !== null) ? $nilai : 'Belum Dinilai'; ?></td>
+                                        <td>
                                             <a href="penilaian_form.php?data=<?php echo $id_penilaian; ?>"
                                                 class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Edit Nilai
@@ -149,18 +153,19 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                         </table>
 
                         <?php
-                
                         $sql_count = "SELECT COUNT(p.id_penilaian) AS total
-                                    FROM
-                                        `penilaian` p
-                                    JOIN
-                                        `siswa` s ON p.id_siswa = s.id_siswa
-                                    JOIN
-                                        `pengumpulan_tugas` pt ON p.id_pengumpulan = pt.id_pengumpulan
-                                    JOIN
-                                        `tugas` t ON pt.id_tugas = t.id_tugas
-                                    JOIN
-                                        `subjek_kelas` sk ON p.id_subjek = sk.id_subjek";
+                                        FROM
+                                            `penilaian` p
+                                        JOIN
+                                            `siswa` s ON p.id_siswa = s.id_siswa
+                                        JOIN
+                                            `user` u ON s.id_user = u.id_user
+                                        JOIN
+                                            `pengumpulan_tugas` pt ON p.id_pengumpulan = pt.id_pengumpulan
+                                        JOIN
+                                            `tugas` t ON pt.id_tugas = t.id_tugas
+                                        JOIN
+                                            `subjek_kelas` sk ON p.id_subjek = sk.id_subjek_kelas";
                         $sql_count .= $where;
                         $result_count = mysqli_query($koneksi, $sql_count);
                         $row_count = mysqli_fetch_assoc($result_count);

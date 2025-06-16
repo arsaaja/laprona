@@ -182,7 +182,8 @@ $result_tugas = mysqli_query($koneksi, $sql_assignments);
                     echo '   <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>';
                     echo '   <p>' . htmlspecialchars($row['subjek_kelas']) . '</p>';
                     echo '   <p>Deadline: ' . htmlspecialchars($row['deadline_tugas']) . '</p>';
-                    echo '   <a href="pengumpulan_tugas.php?id=' . htmlspecialchars($row['id_tugas']) . '" class="button-link">Detail</a>';
+                    echo '   <a href="' . htmlspecialchars($row['id_tugas']) . '" target="_blank" class="button-link">Detail</a>';
+                    echo '   <a href="pengumpulan_tugas.php?id=' . htmlspecialchars($row['id_tugas']) . '" class="button-link">Kumpulkan</a>';
                     echo '</div>';
                 }
             } else {
