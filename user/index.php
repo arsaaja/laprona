@@ -79,14 +79,10 @@ if (isset($_POST['kirim'])) {
     <div class="materi">
         <?php
 
-        $queryTugas = "
-    SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, sk.subjek_kelas
-    FROM tugas t
-    JOIN master_kelas_subjek mks ON t.id_kelas = mks.id_kelas
-    JOIN subjek_kelas sk ON mks.id_subjek = sk.id_subjek_kelas
-    ORDER BY t.id_tugas DESC 
-    LIMIT 7
-";
+        $queryTugas = "SELECT t.*, sk.subjek_kelas FROM tugas t 
+    JOIN kelas k ON t.id_kelas = k.id_kelas
+    JOIN subjek_kelas sk ON t.id_subjek = sk.id_subjek_kelas
+    ORDER BY t.id_tugas DESC LIMIT 4";
         $resultTugas = mysqli_query($koneksi, $queryTugas);
 
         if ($resultTugas) {

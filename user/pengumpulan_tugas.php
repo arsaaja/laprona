@@ -2,7 +2,7 @@
 include('../koneksi/koneksi.php');
 session_start();
 
-$id_tugas = isset($_GET['id']) && is_numeric($_GET['id']) ? (int) $_GET['id'] : 0; 
+$id_tugas = isset($_GET['id']) && is_numeric($_GET['id']) ? (int) $_GET['id'] : 0;
 $id_siswa = $_SESSION['id_siswa'];
 
 $query = "SELECT t.*, sk.subjek_kelas, k.nama_kelas
@@ -16,14 +16,14 @@ $query = "SELECT t.*, sk.subjek_kelas, k.nama_kelas
 $result = mysqli_query($koneksi, $query);
 
 if (!$result) {
-    die("Query failed: " . mysqli_error($koneksi)); 
+    die("Query failed: " . mysqli_error($koneksi));
 }
 
 $data = mysqli_fetch_assoc($result);
 
 if (!$data) {
     echo "<p>Tugas tidak ditemukan.</p>";
-    exit; 
+    exit;
 }
 
 $query_cek = mysqli_query($koneksi, "SELECT * FROM pengumpulan_tugas WHERE id_tugas = $id_tugas AND id_siswa = $id_siswa");
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['tandai_selesai'])) {
     }
 
     if ($success) {
-        echo "<script>alert('Tugas berhasil dikumpulkan!'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('Tugas berhasil dikumpulkan!'); window.location.href='index.php';</script>";
         exit;
     } else {
         echo "<script>alert('Gagal menyimpan tugas.');</script>";

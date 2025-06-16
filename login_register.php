@@ -28,15 +28,18 @@ if (isset($_POST['login'])) {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user["password"])) {
+            $_SESSION['id_user'] = $user['id_user'];
             $_SESSION['nama'] = $user['nama'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
+
             if ($user['role'] == 'admin') {
                 header("Location: admin/index.php");
             } else if ($user['role'] == 'mentor') {
-                header("Location: admin/index.php");
+                header("Location: admin/index.php"); // Assuming mentors go to admin dashboard
             } else if ($user["role"] == "siswa") {
-                $id_user = $user['id_user'];
+                // Insecure query for fetching siswa data
+                $id_user = $user['id_user']; // This id_user is safe here as it came from the DB
                 $siswa = $koneksi->query("SELECT * FROM siswa WHERE id_user = $id_user");
                 if ($siswa->num_rows > 0) {
                     $siswa_data = $siswa->fetch_assoc();

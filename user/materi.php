@@ -1,8 +1,11 @@
-<?php include('../koneksi/koneksi.php');
+<?php
+include('../koneksi/koneksi.php');
 session_start();
 
-$id_kelas = $_SESSION['id_kelas'];
-$id_subjek_kelas = $_SESSION['id_subjek_kelas'];
+$id_kelas = $_SESSION['id_kelas'] ?? 0;
+
+$id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -18,43 +21,78 @@ $id_subjek_kelas = $_SESSION['id_subjek_kelas'];
         <?php include("includes/header.php") ?>
     </header>
 
-    <h2>Daftar Materi</h2>
+    <h2>Daftar Materi
+        <?php
+        // Tampilkan nama subjek di judul jika id_subjek_url ada
+        if ($id_subjek_url > 0) {
+            $query_nama_subjek = mysqli_query($koneksi, "SELECT subjek_kelas FROM subjek_kelas WHERE id_subjek_kelas = $id_subjek_url");
+            $data_nama_subjek = mysqli_fetch_assoc($query_nama_subjek);
+            echo ' - ' . ($data_nama_subjek['subjek_kelas'] ?? 'Subjek Tidak Ditemukan');
+        }
+        ?>
+    </h2>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Cari Materi" />
-    </div>
+    <form method="GET" action="">
+        <div class="search-bar">
+            <input type="hidden" name="id_subjek" value="<?= $id_subjek_url ?>">
+            <input type="text" name="q" placeholder="Cari Materi"
+                value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+            <input type="submit" value="Cari">
+        </div>
+    </form>
 
     <div class="materi-list">
         <?php
-        $query = "SELECT
-    materi.id_materi,
-    materi.nama_materi,
-    materi.isi_materi,
-    subjek_kelas.subjek_kelas
-FROM
-    materi
-JOIN
-    kelas ON materi.id_kelas = kelas.id_kelas
-JOIN
-    master_kelas_subjek ON materi.id_subjek = master_kelas_subjek.id_kelas_subjek
-JOIN
-    subjek_kelas ON master_kelas_subjek.id_kelas_subjek = subjek_kelas.id_subjek_kelas
-WHERE materi.id_kelas = ? AND master_kelas_subjek.id_subjek_kelas = ?
-ORDER BY
-    materi.id_materi DESC
-LIMIT 10";
-        $result = mysqli_query($koneksi, $query);
+        $katakunci = isset($_GET['q']) ? mysqli_real_escape_string($koneksi, $_GET['q']) : '';
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo '<div class="materi-card">';
-            echo '  <div class="materi-icon"><i class="fas fa-file-alt"></i></div>';
-            echo '  <div class="materi-info">';
-            echo '    <h4><strong>' . htmlspecialchars($row['nama_materi']) . '</strong></h4>';
-            echo '    <p>' . htmlspecialchars($row['isi_materi']) . '</p>';
-            echo '    <p><em>' . htmlspecialchars($row['subjek_kelas']) . '</em></p>';
-            echo '  </div>';
-            echo '  <a href="unduh_materi.php?id=' . $row['id_materi'] . '" class="unduh-btn">Unduh</a>';
-            echo '</div>';
+        // Query dasar untuk mengambil materi
+        $query_materi = "SELECT
+            materi.id_materi,
+            materi.nama_materi,
+            materi.isi_materi,
+            subjek_kelas.subjek_kelas
+        FROM
+            materi
+        JOIN
+            kelas ON materi.id_kelas = kelas.id_kelas
+        JOIN
+            subjek_kelas ON materi.id_subjek = subjek_kelas.id_subjek_kelas
+        WHERE
+            materi.id_kelas = $id_kelas"; // Filter berdasarkan id_kelas siswa
+        
+        // Tambahkan filter id_subjek_kelas jika ada di URL
+        if ($id_subjek_url > 0) {
+            $query_materi .= " AND materi.id_subjek = $id_subjek_url";
+        }
+
+        // Tambahkan filter pencarian jika ada kata kunci
+        if ($katakunci != '') {
+            $query_materi .= " AND (
+                materi.nama_materi LIKE '%$katakunci%' OR
+                materi.isi_materi LIKE '%$katakunci%' OR
+                subjek_kelas.subjek_kelas LIKE '%$katakunci%'
+            )";
+        }
+
+        $query_materi .= " ORDER BY materi.id_materi DESC"; // Order by terakhir
+        $query_materi .= " LIMIT 10"; // Batasi hasil
+        
+        $result_materi = mysqli_query($koneksi, $query_materi);
+
+        if (mysqli_num_rows($result_materi) > 0) {
+            while ($row = mysqli_fetch_assoc($result_materi)) {
+                echo '<div class="materi-card">';
+                echo '    <div class="materi-icon"><i class="fas fa-file-alt"></i></div>';
+                echo '    <div class="materi-info">';
+                echo '        <h4><strong>' . htmlspecialchars($row['nama_materi']) . '</strong></h4>';
+                echo '        <p>' . htmlspecialchars($row['isi_materi']) . '</p>';
+                echo '        <p><em>' . htmlspecialchars($row['subjek_kelas']) . '</em></p>';
+                echo '    </div>';
+                echo '    <a href="unduh_materi.php?id=' . $row['id_materi'] . '" class="unduh-btn">Unduh</a>';
+                echo '</div>';
+            }
+        } else {
+            echo "<p>Tidak ada materi untuk subjek ini atau kriteria pencarian.</p>";
         }
         ?>
     </div>

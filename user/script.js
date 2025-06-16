@@ -18,6 +18,7 @@ const track = document.getElementById("carouselTrack");
 const slideWidth = track.clientWidth;
 
 function moveCarousel(direction) {
-  const scrollAmount = track.clientWidth * direction;
-  track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  const track = document.getElementById("carouselTrack");
+  const width = track.clientWidth;
+  track.scrollLeft += direction * width;
 }
