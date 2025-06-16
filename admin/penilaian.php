@@ -76,6 +76,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                     <th width="20%">Nama Siswa</th>
                                     <th width="15%">Mata Pelajaran</th>
                                     <th width="15%">Tanggal Pengumpulan</th>
+                                    <th width="15%">Link Drive</th>
                                     <th width="10%">Nilai</th>
                                     <th width="15%">
                                         <center>Aksi</center>
@@ -98,7 +99,8 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                             u.nama AS nama_siswa,
                                             t.judul_tugas,
                                             sk.subjek_kelas,
-                                            pt.waktu_submit
+                                            pt.waktu_submit,
+                                            pt.link_drive
                                         FROM
                                             `penilaian` p
                                         JOIN
@@ -129,6 +131,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                     $nama_subjek = $data['subjek_kelas'];
                                     $tanggal_pengumpulan = $data['waktu_submit'];
                                     $nilai = $data['nilai'];
+                                    $link_drive = $data['link_drive'];
                                     ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
@@ -136,9 +139,11 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                         <td><?php echo $nama_siswa; ?></td>
                                         <td><?php echo $nama_subjek; ?></td>
                                         <td><?php echo $tanggal_pengumpulan; ?></td>
+                                        <td><a href="<?php echo $link_drive; ?>"
+                                                target="_blank"><?php echo $link_drive; ?></a></td>
                                         <td><?php echo ($nilai !== null) ? $nilai : 'Belum Dinilai'; ?></td>
                                         <td>
-                                            <a href="penilaian_form.php?data=<?php echo $id_penilaian; ?>"
+                                            <a href="penilaian_edit.php?data=<?php echo $id_penilaian; ?>"
                                                 class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Edit Nilai
                                             </a>
