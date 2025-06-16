@@ -96,6 +96,14 @@ $logo = $data['logo'];
           <?php }
         } ?>
         <li class="nav-item">
+          <a href="penilaian.php" class="nav-link">
+            <i class="nav-icon fa fa-chalkboard"></i>
+            <p>
+              Penilaian Tugas </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
           <a href="riwayatpendidikan.php" class="nav-link">
             <i class="nav-icon fa fa-graduation-cap"></i>
             <p>

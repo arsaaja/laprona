@@ -2,7 +2,6 @@
 session_start();
 include('../koneksi/koneksi.php');
 
-// Cek apakah user sudah login
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../index.php");
     exit;
@@ -10,11 +9,9 @@ if (!isset($_SESSION['id_user'])) {
 
 $id_user = $_SESSION['id_user'];
 
-// Ambil data user dari database
 $query = "SELECT * FROM user WHERE id_user = $id_user";
 $result = mysqli_query($koneksi, $query);
 
-// Cek apakah query berhasil dan data ditemukan
 if (!$result || mysqli_num_rows($result) === 0) {
     echo "Data user tidak ditemukan.";
     exit;

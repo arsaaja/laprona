@@ -23,7 +23,6 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
 
     <h2>Daftar Materi
         <?php
-        // Tampilkan nama subjek di judul jika id_subjek_url ada
         if ($id_subjek_url > 0) {
             $query_nama_subjek = mysqli_query($koneksi, "SELECT subjek_kelas FROM subjek_kelas WHERE id_subjek_kelas = $id_subjek_url");
             $data_nama_subjek = mysqli_fetch_assoc($query_nama_subjek);
@@ -37,7 +36,6 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
             <input type="hidden" name="id_subjek" value="<?= $id_subjek_url ?>">
             <input type="text" name="q" placeholder="Cari Materi"
                 value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
-            <input type="submit" value="Cari">
         </div>
     </form>
 
@@ -45,7 +43,6 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
         <?php
         $katakunci = isset($_GET['q']) ? mysqli_real_escape_string($koneksi, $_GET['q']) : '';
 
-        // Query dasar untuk mengambil materi
         $query_materi = "SELECT
             materi.id_materi,
             materi.nama_materi,
@@ -58,14 +55,12 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
         JOIN
             subjek_kelas ON materi.id_subjek = subjek_kelas.id_subjek_kelas
         WHERE
-            materi.id_kelas = $id_kelas"; // Filter berdasarkan id_kelas siswa
-        
-        // Tambahkan filter id_subjek_kelas jika ada di URL
+            materi.id_kelas = $id_kelas";
+
         if ($id_subjek_url > 0) {
             $query_materi .= " AND materi.id_subjek = $id_subjek_url";
         }
 
-        // Tambahkan filter pencarian jika ada kata kunci
         if ($katakunci != '') {
             $query_materi .= " AND (
                 materi.nama_materi LIKE '%$katakunci%' OR
@@ -74,9 +69,9 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
             )";
         }
 
-        $query_materi .= " ORDER BY materi.id_materi DESC"; // Order by terakhir
-        $query_materi .= " LIMIT 10"; // Batasi hasil
-        
+        $query_materi .= " ORDER BY materi.id_materi DESC";
+        $query_materi .= " LIMIT 10";
+
         $result_materi = mysqli_query($koneksi, $query_materi);
 
         if (mysqli_num_rows($result_materi) > 0) {
