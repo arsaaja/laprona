@@ -80,7 +80,6 @@ $id_subjek_url = isset($_GET['id_subjek']) ? intval($_GET['id_subjek']) : 0;
                 echo '    <div class="materi-icon"><i class="fas fa-file-alt"></i></div>';
                 echo '    <div class="materi-info">';
                 echo '        <h4><strong>' . htmlspecialchars($row['nama_materi']) . '</strong></h4>';
-                echo '        <p>' . htmlspecialchars($row['isi_materi']) . '</p>';
                 echo '        <p><em>' . htmlspecialchars($row['subjek_kelas']) . '</em></p>';
                 echo '    </div>';
                 echo '    <a href="' . htmlspecialchars($row['isi_materi']) . '" target="_blank" class="unduh-btn">Unduh</a>';

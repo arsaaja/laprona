@@ -32,9 +32,9 @@ if ($id_subjek_url > 0 && $subject_title_name != 'Subjek Tidak Ditemukan') {
     $nama_kelas_performa = $subject_title_name;
 } else {
     $query_kelas_stmt = mysqli_prepare($koneksi, "SELECT GROUP_CONCAT(DISTINCT sk.subjek_kelas SEPARATOR ', ') AS subjek_kelas
-                                                FROM tugas t
-                                                JOIN subjek_kelas sk ON t.id_subjek = sk.id_subjek_kelas
-                                                WHERE t.id_kelas = ?");
+                                                   FROM tugas t
+                                                   JOIN subjek_kelas sk ON t.id_subjek = sk.id_subjek_kelas
+                                                   WHERE t.id_kelas = ?");
     if ($query_kelas_stmt) {
         mysqli_stmt_bind_param($query_kelas_stmt, "i", $id_kelas);
         mysqli_stmt_execute($query_kelas_stmt);
@@ -114,7 +114,7 @@ if ($id_subjek_url > 0) {
     }
 }
 
-$sql_assignments = "SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, sk.subjek_kelas
+$sql_assignments = "SELECT t.id_tugas, t.judul_tugas, t.deadline_tugas, t.tugas, sk.subjek_kelas
                     FROM tugas t
                     JOIN kelas k ON t.id_kelas = k.id_kelas
                     JOIN subjek_kelas sk ON t.id_subjek = sk.id_subjek_kelas
@@ -178,12 +178,16 @@ $result_tugas = mysqli_query($koneksi, $sql_assignments);
             if ($result_tugas && mysqli_num_rows($result_tugas) > 0) {
                 while ($row = mysqli_fetch_assoc($result_tugas)) {
                     echo '<div class="card">';
-                    echo '   <div class="icon"><i class="fas fa-tasks"></i></div>';
-                    echo '   <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>';
-                    echo '   <p>' . htmlspecialchars($row['subjek_kelas']) . '</p>';
-                    echo '   <p>Deadline: ' . htmlspecialchars($row['deadline_tugas']) . '</p>';
-                    echo '   <a href="' . htmlspecialchars($row['id_tugas']) . '" target="_blank" class="button-link">Detail</a>';
-                    echo '   <a href="pengumpulan_tugas.php?id=' . htmlspecialchars($row['id_tugas']) . '" class="button-link">Kumpulkan</a>';
+                    echo '    <div class="icon"><i class="fas fa-tasks"></i></div>';
+                    echo '    <h3>' . htmlspecialchars($row['judul_tugas']) . '</h3>';
+                    echo '    <p>' . htmlspecialchars($row['subjek_kelas']) . '</p>';
+                    echo '    <p>Deadline: ' . htmlspecialchars($row['deadline_tugas']) . '</p>';
+                    if (!empty($row['tugas'])) {
+                        echo '    <a href="' . htmlspecialchars($row['tugas']) . '" target="_blank" class="button-link">Detail</a>';
+                    } else {
+                        echo '    <span class="button-link disabled">Detail (Tidak Tersedia)</span>';
+                    }
+                    echo '    <a href="pengumpulan_tugas.php?id=' . htmlspecialchars($row['id_tugas']) . '" class="button-link">Kumpulkan</a>';
                     echo '</div>';
                 }
             } else {
