@@ -104,15 +104,6 @@ $logo = $data['logo'];
               Penilaian Tugas </p>
           </a>
         </li>
-
-        <li class="nav-item">
-          <a href="riwayatpendidikan.php" class="nav-link">
-            <i class="nav-icon fa fa-graduation-cap"></i>
-            <p>
-              Jenjang Pendidikan
-            </p>
-          </a>
-        </li>
         <li class="nav-item">
           <a href="pesan.php" class="nav-link">
             <i class="nav-icon fa fa-envelope"></i>

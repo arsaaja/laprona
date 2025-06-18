@@ -1,7 +1,6 @@
 <?php
 include('../koneksi/koneksi.php');
 
-// Proses hapus
 if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
     $id_tugas = mysqli_real_escape_string($koneksi, $_GET['data']);
     $sql_dh = "DELETE FROM `tugas` WHERE `id_tugas` = '$id_tugas'";
@@ -29,7 +28,6 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h3><i class="fas fa-tasks"></i> Tugas</h3>
-                            <?php // Changed icon for better representation ?>
                         </div>
                     </div>
                     <a href="tugas_tambah.php" class="btn btn-primary mb-3">+ Tambah Tugas</a>
@@ -74,11 +72,11 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                 <tr>
                                     <th width="5%">No</th>
                                     <th width="20%">Judul Tugas</th>
-                                    <th width="20%">Tugas</th> <?php // Added 'Tugas' column header ?>
+                                    <th width="20%">Tugas</th> <?php ?>
                                     <th width="10%">Skor</th>
                                     <th width="15%">Deadline</th>
-                                    <th width="10%">Kelas</th> <?php // Added 'Kelas' column header ?>
-                                    <th width="10%">Subjek</th> <?php // Added 'Subjek' column header ?>
+                                    <th width="10%">Kelas</th> <?php  ?>
+                                    <th width="10%">Subjek</th> <?php  ?>
                                     <th width="10%">
                                         <center>Aksi</center>
                                     </th>
@@ -158,8 +156,6 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                         </table>
 
                         <?php
-                        // Pagination
-                        // Updated COUNT query to reflect the JOINs
                         $sql_count = "SELECT COUNT(*) AS total
                                       FROM `tugas`
                                       JOIN `kelas` ON tugas.id_kelas = kelas.id_kelas
@@ -174,7 +170,6 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                             <ul class="pagination justify-content-center mt-3">
                                 <?php
                                 if ($jum_halaman == 0) {
-                                    //tidak ada halaman
                                 } else if ($jum_halaman == 1) {
                                     echo "<li class='page-item'><a class='page-link'>1</a></li>";
                                 } else {
