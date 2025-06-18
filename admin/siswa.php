@@ -33,7 +33,6 @@ if ((isset($_GET['aksi'])) && (isset($_GET['data']))) {
               <h3><i class="fas fa-jenjang"></i> Siswa</h3>
             </div>
           </div>
-          <a href="siswa_tambah.php" class="btn btn-primary mb-3">+ Tambah Siswa</a>
         </div>
       </section>
 

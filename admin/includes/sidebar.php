@@ -1,4 +1,6 @@
 <?php
+include('../koneksi/koneksi.php');
+
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
@@ -130,7 +132,7 @@ $logo = $data['logo'];
           </a>
         </li>
         <li class="nav-item">
-          <a href="index.php" class="nav-link">
+          <a href="/laprona/index.php" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>
               Sign Out

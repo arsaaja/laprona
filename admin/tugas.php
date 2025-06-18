@@ -28,7 +28,8 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h3><i class="fas fa-jenjang"></i> Tugas</h3>
+                            <h3><i class="fas fa-tasks"></i> Tugas</h3>
+                            <?php // Changed icon for better representation ?>
                         </div>
                     </div>
                     <a href="tugas_tambah.php" class="btn btn-primary mb-3">+ Tambah Tugas</a>
@@ -72,10 +73,13 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="35%">Judul Tugas</th>
+                                    <th width="20%">Judul Tugas</th>
+                                    <th width="20%">Tugas</th> <?php // Added 'Tugas' column header ?>
                                     <th width="10%">Skor</th>
-                                    <th width="25%">Deadline</th>
-                                    <th width="15%">
+                                    <th width="15%">Deadline</th>
+                                    <th width="10%">Kelas</th> <?php // Added 'Kelas' column header ?>
+                                    <th width="10%">Subjek</th> <?php // Added 'Subjek' column header ?>
+                                    <th width="10%">
                                         <center>Aksi</center>
                                     </th>
                                 </tr>
@@ -90,29 +94,53 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                     $posisi = ($halaman - 1) * $batas;
                                 }
 
-                                $sql = "SELECT `id_tugas`, `judul_tugas`, `skor_tugas`, `deadline_tugas` FROM `tugas`";
+                                $sql = "SELECT
+                                            tugas.id_tugas,
+                                            tugas.judul_tugas,
+                                            tugas.tugas,
+                                            tugas.skor_tugas,
+                                            tugas.deadline_tugas,
+                                            kelas.nama_kelas,
+                                            subjek_kelas.subjek_kelas
+                                        FROM
+                                            `tugas`
+                                        JOIN
+                                            `kelas` ON tugas.id_kelas = kelas.id_kelas
+                                        JOIN
+                                            `subjek_kelas` ON tugas.id_subjek = subjek_kelas.id_subjek_kelas";
                                 $where = "";
 
                                 if (isset($_GET["katakunci"])) {
                                     $katakunci = mysqli_real_escape_string($koneksi, $_GET["katakunci"]);
-                                    $where = " WHERE `judul_tugas` LIKE '%$katakunci%' or ";
+                                    $where = " WHERE
+                                                tugas.judul_tugas LIKE '%$katakunci%' OR
+                                                tugas.tugas LIKE '%$katakunci%' OR
+                                                kelas.nama_kelas LIKE '%$katakunci%' OR
+                                                subjek_kelas.subjek_kelas LIKE '%$katakunci%'";
                                 }
 
-                                $sql .= $where . " ORDER BY `judul_tugas` LIMIT $posisi, $batas";
+                                $sql .= $where . " ORDER BY tugas.judul_tugas LIMIT $posisi, $batas";
                                 $query = mysqli_query($koneksi, $sql);
-                                $no = 1;
-
+                                $no = $posisi + 1;
+                                
                                 while ($data = mysqli_fetch_assoc($query)) {
                                     $id_tugas = $data['id_tugas'];
                                     $judul_tugas = $data['judul_tugas'];
+                                    $tugas_content = $data['tugas']; 
                                     $skor_tugas = $data['skor_tugas'];
                                     $deadline_tugas = $data['deadline_tugas'];
+                                    $nama_kelas = $data['nama_kelas']; 
+                                    $subjek_kelas = $data['subjek_kelas']; 
                                     ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
                                         <td><?php echo $judul_tugas; ?></td>
+                                        <td><?php echo substr($tugas_content, 0, 50) . (strlen($tugas_content) > 50 ? '...' : ''); ?>
+                                        </td> <?php  ?>
                                         <td><?php echo $skor_tugas; ?></td>
                                         <td><?php echo $deadline_tugas; ?></td>
+                                        <td><?php echo $nama_kelas; ?></td> <?php ?>
+                                        <td><?php echo $subjek_kelas; ?></td> <?php ?>
                                         <td align="center">
                                             <a href="tugas_edit.php?data=<?php echo $id_tugas; ?>"
                                                 class="btn btn-sm btn-warning">
@@ -124,14 +152,18 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                             </a>
                                         </td>
                                     </tr>
-                                    <?php $no++;
+                                    <?php
                                 } ?>
                             </tbody>
                         </table>
 
                         <?php
                         // Pagination
-                        $sql_count = "SELECT COUNT(*) AS total FROM `tugas`" . $where;
+                        // Updated COUNT query to reflect the JOINs
+                        $sql_count = "SELECT COUNT(*) AS total
+                                      FROM `tugas`
+                                      JOIN `kelas` ON tugas.id_kelas = kelas.id_kelas
+                                      JOIN `subjek_kelas` ON tugas.id_subjek = subjek_kelas.id_subjek_kelas" . $where;
                         $result_count = mysqli_query($koneksi, $sql_count);
                         $row_count = mysqli_fetch_assoc($result_count);
                         $jum_data = $row_count['total'];
@@ -149,7 +181,7 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                     $sebelum = $halaman - 1;
                                     $setelah = $halaman + 1;
                                     if (isset($_GET["katakunci"])) {
-                                        $katakunci_tugas= $_GET["katakunci"];
+                                        $katakunci_tugas = $_GET["katakunci"];
                                         if ($halaman != 1) {
                                             echo "<li class='page-item'><a class='page-link'href='tugas.php?katakunci=$katakunci_tugas&halaman=1'>First</a></li>";
                                             echo "<li class='page-item'><a class='page-link'href='tugas.php?katakunci=$katakunci_tugas&halaman=$sebelum'>«</a></li>";
@@ -162,6 +194,10 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['data'])) {
                                                     echo "<li class='page-item'><a class='page-link'>$i</a></li>";
                                                 }
                                             }
+                                        }
+                                        if ($halaman != $jum_halaman) {
+                                            echo "<li class='page-item'><a class='page-link' href='tugas.php?katakunci=$katakunci_tugas&halaman=$setelah'> »</a></li>";
+                                            echo "<li class='page-item'><a class='page-link'href='tugas.php?katakunci=$katakunci_tugas&halaman=$jum_halaman'>Last</a></li>";
                                         }
                                     } else {
                                         if ($halaman != 1) {
