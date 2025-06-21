@@ -61,7 +61,7 @@ if (isset($_POST['kirim'])) {
                 echo '  <div class="icon"><i class="fas ' . ($row["ikon"] ?? "fa-book") . '"></i></div>';
                 echo '  <h3>' . htmlspecialchars($row['nama_materi']) . '</h3>';
                 echo '  <p>' . htmlspecialchars($row['subjek_kelas']) . '</p>';
-                echo '  <a href="detail_materi.php?id=' . $row['id_materi'] . '" class="button-link">Detail</a>';
+                echo '    <a href="' . htmlspecialchars($row['isi_materi']) . '" target="_blank" class="button-link">Unduh</a>';
                 echo '</div>';
             }
         } else {
