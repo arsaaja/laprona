@@ -3,7 +3,7 @@
 
 session_start();
 
-define('BASE_URL', '/bimbel-online/public');
+define('BASE_URL', '');
 define('APP_NAME', 'La Prona');
 
 date_default_timezone_set('Asia/Jakarta');
