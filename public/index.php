@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 
 if (isLoggedIn()) {
-    header('Location: dashboard.php');
+    header('Location: ' . (isAdmin() ? 'admin/dashboard.php' : 'dashboard.php'));
 } else {
     header('Location: login.php');
 }
